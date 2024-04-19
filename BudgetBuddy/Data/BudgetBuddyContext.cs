@@ -1,6 +1,5 @@
 ﻿using BudgetBuddy.Model;
 using BudgetBuddy.Model.Enums;
-using DotNetEnv;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 

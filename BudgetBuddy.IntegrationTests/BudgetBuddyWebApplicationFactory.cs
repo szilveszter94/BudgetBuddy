@@ -18,7 +18,6 @@ public class BudgetBuddyWebApplicationFactory<TProgram> : WebApplicationFactory<
     private readonly string _dbName = Guid.NewGuid().ToString();
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
-        Environment.SetEnvironmentVariable("ASPNETCORE_ENVIRONMENT", "test");
         builder.ConfigureServices(services =>
         {
             // adding in-memory database
