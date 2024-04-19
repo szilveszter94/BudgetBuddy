@@ -7,7 +7,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faInfoCircle,
   faHouse,
-  faPen,
   faTrophy,
 } from "@fortawesome/free-solid-svg-icons";
 import "./Navbar.scss";
@@ -76,14 +75,6 @@ const Navbar = () => {
                 </Link>
               </li>
             )}
-            {currentUser && currentUser.role === "Admin" ? 
-            (<li className="nav-item">
-              <Link className="nav-link ms-4 fs-3" to="/admin">
-                 Admin Panel <FontAwesomeIcon icon={faPen} />
-              </Link>
-            </li>) : 
-            <></>
-            }
           </ul>
           <div className="me-2 mb-2">
             {currentUser ? (
