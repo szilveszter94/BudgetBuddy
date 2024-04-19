@@ -1,7 +1,6 @@
 using System.Text;
 using BudgetBuddy.Data;
 using BudgetBuddy.Model;
-using BudgetBuddy.Services;
 using BudgetBuddy.Services.AchievementService;
 using BudgetBuddy.Services.Authentication;
 using BudgetBuddy.Services.FinancialNewsService;
@@ -11,11 +10,9 @@ using BudgetBuddy.Services.Repositories.Account;
 using BudgetBuddy.Services.Repositories.Achievement;
 using BudgetBuddy.Services.Repositories.Goal;
 using BudgetBuddy.Services.Repositories.Report;
-// using BudgetBuddy.Services.Repositories.User;
 using BudgetBuddy.Services.Repositories.Transaction;
 using BudgetBuddy.Services.Repositories.User;
 using BudgetBuddy.Services.TransactionServices;
-using DotNetEnv;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -25,29 +22,9 @@ using Microsoft.Net.Http.Headers;
 using Microsoft.OpenApi.Models;
 using SameSiteMode = Microsoft.AspNetCore.Http.SameSiteMode;
 
-Env.TraversePath().Load("../.envs/server.env");
-var connectionString = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING");
-
 var builder = WebApplication.CreateBuilder(args);
-var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
-var userSecrets = new Dictionary<string, string>
-{
-    { "validIssuer", builder.Configuration["JwtSettings:ValidIssuer"] },
-    { "validAudience", builder.Configuration["JwtSettings:ValidAudience"] },
-    { "issuerSigningKey", builder.Configuration["JwtSettings:IssuerSigningKey"] },
-    { "adminEmail", builder.Configuration["AdminInfo:AdminEmail"]},
-    { "adminPassword", builder.Configuration["AdminInfo:AdminPassword"]}
-};
 
-if (environment == "test")
-{
-    userSecrets["validIssuer"] = "testIssuer";
-    userSecrets["validAudience"] = "testAudience";
-    userSecrets["issuerSigningKey"] = "This_is_a_super_secure_key_and_you_know_it";
-    userSecrets["adminEmail"] = "test@admin.com";
-    userSecrets["adminPassword"] = "test123";
-}
-
+var conf = builder.Configuration;
 
 AddServices();
 ConfigureSwagger();
@@ -128,15 +105,15 @@ void AddServices(){
         // Fetch adminInfo from configuration or any other source
         var adminInfo = new Dictionary<string, string>
         {
-            {"adminEmail", userSecrets["adminEmail"]},
-            {"adminPassword", userSecrets["adminPassword"]}
+            {"adminEmail", conf["AdminInfo_AdminEmail"]},
+            {"adminPassword", conf["AdminInfo_AdminPassword"]}
         };
 
         return new AuthenticationSeeder(roleManager, userManager, adminInfo);
     });
     // builder.Services.AddTransient<IUserRepository, UserRepository>();
     builder.Services.AddScoped<ITokenService>(provider =>
-        new TokenService(userSecrets["validIssuer"], userSecrets["validAudience"], userSecrets["issuerSigningKey"]));
+        new TokenService(conf["JwtSettings_ValidIssuer"], conf["JwtSettings_ValidAudience"], conf["JwtSettings_IssuerSigningKey"]));
     builder.Services.AddCors(options =>  
         options.AddPolicy("Development", builder =>  
         {  
@@ -193,7 +170,7 @@ void AddDbContext()
     builder.Services.AddDbContext<BudgetBuddyContext>(options =>
     {
         Console.WriteLine("Trying to connect to database...");
-        options.UseSqlServer(connectionString);
+        options.UseSqlServer(conf["DB_CONNECTION_STRING"]);
         Console.WriteLine("Connected to database!");
     });
 }
@@ -243,10 +220,10 @@ void AddAuthentication()
                 ValidateAudience = true,
                 ValidateLifetime = true,
                 ValidateIssuerSigningKey = true,
-                ValidIssuer = userSecrets["validIssuer"],
-                ValidAudience = userSecrets["validAudience"],
+                ValidIssuer = conf["JwtSettings_ValidIssuer"],
+                ValidAudience = conf["JwtSettings_ValidAudience"],
                 IssuerSigningKey = new SymmetricSecurityKey(
-                    Encoding.UTF8.GetBytes(userSecrets["issuerSigningKey"])
+                    Encoding.UTF8.GetBytes(conf["JwtSettings_IssuerSigningKey"])
                 ),
             };
         });
