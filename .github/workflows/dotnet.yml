@@ -26,11 +26,11 @@ jobs:
     - name: Build
       run: dotnet build --no-restore
     - name: Test
-      env:
-        VALID_ISSUER: ${{ secrets.JWTSETTINGS_VALIDISSUER }}
-        VALID_AUDIENCE: ${{ secrets.JWTSETTINGS_VALIDAUDIENCE }}
-        ISSUER_SIGNING_KEY: ${{ secrets.JWTSETTINGS_ISSUERSIGNINGKEY }}
-        ADMIN_EMAIL: ${{ secrets.ADMIN_EMAIL }}
-        ADMIN_PASSWORD: ${{ secrets.ADMININFO_ADMINEMAIL }}
       run: dotnet test --no-build --verbosity normal
+      env:
+        JwtSettings_IssuerSigningKey: ${{ configuration.JwtSettings_IssuerSigningKey }}
+        AdminInfo_AdminPassword: ${{ configuration.AdminInfo_AdminPassword }}
+        AdminInfo_AdminEmail: ${{ configuration.AdminInfo_AdminEmail }}
+        DB_CONNECTION_STRING: ${{ configuration.DB_CONNECTION_STRING }}
+        FINANCIAL_NEWS_API_KEY: ${{ configuration.FINANCIAL_NEWS_API_KEY }}
     
