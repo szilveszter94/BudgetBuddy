@@ -27,4 +27,12 @@ jobs:
       run: dotnet build --no-restore
     - name: Test
       run: dotnet test --no-build --verbosity normal
+      env:
+        JwtSettings_IssuerSigningKey: ${{ configuration.JwtSettings_IssuerSigningKey }}
+        AdminInfo_AdminPassword: ${{ configuration.AdminInfo_AdminPassword }}
+        AdminInfo_AdminEmail: ${{ configuration.AdminInfo_AdminEmail }}
+        DB_CONNECTION_STRING: ${{ configuration.DB_CONNECTION_STRING }}
+        FINANCIAL_NEWS_API_KEY: ${{ configuration.FINANCIAL_NEWS_API_KEY }}
+        JwtSettings_ValidIssuer: ${{ configuration.JwtSettings_ValidIssuer }}
+        JwtSettings_ValidAudience: ${{ configuration.JwtSettings_ValidAudience }}
     
