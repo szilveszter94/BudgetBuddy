@@ -33,6 +33,4 @@ jobs:
         AdminInfo_AdminEmail: ${{ configuration.AdminInfo_AdminEmail }}
         DB_CONNECTION_STRING: ${{ configuration.DB_CONNECTION_STRING }}
         FINANCIAL_NEWS_API_KEY: ${{ configuration.FINANCIAL_NEWS_API_KEY }}
-        JwtSettings_ValidIssuer: ${{ configuration.JwtSettings_ValidIssuer }}
-        JwtSettings_ValidAudience: ${{ configuration.JwtSettings_ValidAudience }}
     
